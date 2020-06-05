@@ -1422,9 +1422,10 @@ bool is_SPRP64(uint64_t n, uint64_t a) {
 }
 
 bool isprime64(uint64_t x) {
-	if (x % 5 == 0 || x % 7 == 0) return false;
-	if (x < 121) return true;
-	if (!is_SPRP64(x,2)) return false;
+	if (x == 2 || x == 3 || x == 5 || x == 7) return true;
+	if (x % 2 == 0 || x % 3 == 0 || x % 5 == 0 || x % 7 == 0) return false;
+	if (x < 121) return (x > 1);
+	if (!is_SPRP64(x, 2)) return false;
 	uint64_t h = x;
 	h = ((h >> 32) ^ h) * 0x45d9f3b3335b369;
 	h = ((h >> 32) ^ h) * 0x3335b36945d9f3b;
