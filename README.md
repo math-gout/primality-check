@@ -3,7 +3,7 @@ Small header file for fast 64 bits primality check
 
 ## Usage example
 
-```
+```c
 #include <stdlib.h>
 #include <stdio.h>
 
