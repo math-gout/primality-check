@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+uint64_t safe_mul64(uint64_t a, uint64_t b, uint64_t mod);
+uint64_t safe_exp64(uint64_t a, uint64_t b, uint64_t n);
+bool is_SPRP64(uint64_t n, uint64_t a);
+bool isprime64(uint64_t x);
+
 uint32_t bases64[] = { 2404423, 3027617, 3715179, 3264583, 1593555, 5853461, 1552463, 1896881, 2904107, 5600043,
 1356087, 2044251, 290821, 1150981, 1642719, 3076389, 667689, 2650251, 1200327, 1724421, 4133355, 4494151,
 1151005, 2674735, 2404773, 667731, 249897, 2904087, 1257551, 1298703, 815165, 241669, 987333, 1839543,
@@ -1371,12 +1376,12 @@ uint32_t bases64[] = { 2404423, 3027617, 3715179, 3264583, 1593555, 5853461, 155
 
 #ifdef __SIZEOF_INT128__
 	// given 0 <= a,b,n < 2^64, computes (a*b)%n without overflow using 128 bits
-	inline uint64_t safe_mul64(uint64_t a, uint64_t b, uint64_t n) {
+	uint64_t safe_mul64(uint64_t a, uint64_t b, uint64_t n) {
 		return (uint64_t)((((__uint128_t)a) * b) % n);
 	}
 #else
 	// given 0 <= a,b,n < 2^64, computes (a*b)%n without overflow using 64 bits
-	inline uint64_t safe_mul64(uint64_t a, uint64_t b, uint64_t mod) {
+	uint64_t safe_mul64(uint64_t a, uint64_t b, uint64_t mod) {
 		uint64_t res = 0;
 		a %= mod;
 		while (b) {
@@ -1389,7 +1394,7 @@ uint32_t bases64[] = { 2404423, 3027617, 3715179, 3264583, 1593555, 5853461, 155
 #endif
 
 // given 0 <= a,b,n < 2^64, computes (a^b)%n without overflow
-inline uint64_t safe_exp64(uint64_t a, uint64_t b, uint64_t n) {
+uint64_t safe_exp64(uint64_t a, uint64_t b, uint64_t n) {
 	uint64_t res = 1, pw = 1;
 	for (int i = 0; i < 64 && pw <= b; ++i) {
 		if (b & pw) res = safe_mul64(res, a, n);
@@ -1400,7 +1405,7 @@ inline uint64_t safe_exp64(uint64_t a, uint64_t b, uint64_t n) {
 }
 
 // given 2 <= n,a < 2^64, a prime, check whether n is a-SPRP
-inline bool is_SPRP64(uint64_t n, uint64_t a) {
+bool is_SPRP64(uint64_t n, uint64_t a) {
 	if (n == a) return true;
 	if (n % a == 0) return false;
 	uint64_t d = n - 1;
